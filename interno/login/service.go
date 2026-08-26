@@ -28,7 +28,3 @@ func (l *LoginService) CreateLogin(login *login) error {
 
 	return nil
 }
-
-func (l *LoginService) GerarToken(){
-	
-}
