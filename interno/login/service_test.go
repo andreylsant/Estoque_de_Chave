@@ -11,17 +11,21 @@ type MockLogin struct{
 	mock.Mock
 }
 
-func (m *MockLogin) SaveLogin(login *login) error {
+func (m *MockLogin) SaveLogin(login *Login) error {
 	a:= m.Called(login)
 	return a.Error(0)
+}
+
+func (m *MockLogin) FindByEmail(email string) (*Login, error){
+	return &Login{}, nil
 }
 
 func Test_CreateLogin(t *testing.T) {
 	assert:=  assert.New(t)
 	//instanciando meu login 
-	login:= login{
-		email: "email@gmail.com",
-		senha: "1234567",
+	login:= Login{
+		Email: "email@gmail.com",
+		Senha: "1234567",
 	}
 	//
 	repositoryMock:= new(MockLogin)
@@ -38,9 +42,9 @@ func Test_CreateLogin(t *testing.T) {
 func Test_CreateLogin_SaveLogin(t *testing.T) {
 	assert:=  assert.New(t)
 	//instanciando meu login 
-	login:= login{
-		email: "email@gmail.com",
-		senha: "1234567",
+	login:= Login{
+		Email: "email@gmail.com",
+		Senha: "1234567",
 	}
 	//
 	repositoryMock:= new(MockLogin)

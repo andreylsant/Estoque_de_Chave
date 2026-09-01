@@ -17,8 +17,8 @@ func Test_NewLogin(t *testing.T) {
 
 	newLogin := NewLogin(email, senha)
 
-	assert.Equal(newLogin.email, email)
-	assert.Equal(newLogin.senha, senha)
+	assert.Equal(newLogin.Email, email)
+	assert.Equal(newLogin.Senha, senha)
 }
 
 func Test_ValidadeLogin(t *testing.T) {

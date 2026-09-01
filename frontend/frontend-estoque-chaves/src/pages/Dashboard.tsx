@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StockCard } from "../componets/StockCard";
 import { ProductTable } from "../componets/ProductTable";
 import { produtosIniciais } from "../data/produtos";
-import { Produto } from "../types/produto";
+import type  { Produto } from "../types/produto";
 
 export function Dashboard() {
   const [produtos, setProdutos] = useState<Produto[]>(

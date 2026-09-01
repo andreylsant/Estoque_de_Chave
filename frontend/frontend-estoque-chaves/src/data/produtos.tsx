@@ -1,4 +1,4 @@
-import { Produto } from "../types/produto.tsx";
+import type { Produto } from "../types/produto";
 
 export const produtosIniciais: Produto[] = [
   {

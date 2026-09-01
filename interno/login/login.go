@@ -7,41 +7,41 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type login struct {
-	id    int  
-	email string 
-	senha string 
+type Login struct {
+	Id    int
+	Email string
+	Senha  string
 }
 
-func NewLogin(email, senha string) *login {
-	l:= &login{
-		id:    1,
-		email: email,
-		senha: senha,
+func NewLogin(email, senha string) *Login {
+	l := &Login{
+		Id:    1,
+		Email: email,
+		Senha: senha,
 	}
 
 	l.ValidadeLogin()
 
-	return l 
+	return l
 }
 
-func (l *login) ValidadeLogin() error{
+func (l *Login) ValidadeLogin() error {
 	slog.Info("Iniciando validação!!")
 
-	if l.email == "" || l.senha == ""{
+	if l.Email == "" || l.Senha == "" {
 		return fmt.Errorf("error ao validar email e senha!")
 	}
 
 	return nil
 }
 
-func (l *login) HashSenha(senha string) (string, error){
+func (l *Login) HashSenha(senha string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword(
 		[]byte(senha),
 		bcrypt.DefaultCost,
 	)
-	if err != nil{
-		return  "", fmt.Errorf("Error ao gerar hash", err)
+	if err != nil {
+		return "", fmt.Errorf("Error ao gerar hash", err)
 	}
 
 	return string(hash), nil

@@ -1,4 +1,4 @@
-import { Produto } from "../types/produto";
+import type { Produto } from "../types/produto";
 
 interface ProductTableProps {
   produtos: Produto[];

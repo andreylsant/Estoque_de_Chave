@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { produtosIniciais } from "../data/produtos";
 import { ProductTable } from "../componets/ProductTable";
-import { Produto } from "../types/produto";
+import type { Produto } from "../types/produto";
 
 export function Estoque() {
   const [produtos, setProdutos] = useState<Produto[]>(
