@@ -33,7 +33,7 @@ func Test_CreateLogin(t *testing.T) {
 		RepositoryLogin: repositoryMock,
 	}
 
-	err:= service.CreateLogin(&login)
+	_, err:= service.CreateLogin(&login)
 
 	assert.Nil(err)
 
@@ -55,7 +55,7 @@ func Test_CreateLogin_SaveLogin(t *testing.T) {
 		RepositoryLogin: repositoryMock,
 	}
 
-	err:= service.CreateLogin(&login)
+	_, err:= service.CreateLogin(&login)
 
 	assert.NoError(err)
 

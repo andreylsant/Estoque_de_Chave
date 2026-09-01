@@ -22,14 +22,15 @@ func (h *HandleKey) Post_Login(c *gin.Context) {
 		return
 	}
 
-	if err := h.LoginService.CreateLogin(&login); err != nil {
+	service, err := h.LoginService.CreateLogin(&login)
+
+	if err != nil {
 		fmt.Errorf("Error: ", err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"email":    login.Email,
+		"token":    service,
 		"mensagem": "Login recebido",
-		"id":    login.Id,
 	})
 }

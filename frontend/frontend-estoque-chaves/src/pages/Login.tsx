@@ -52,7 +52,7 @@ export function Login() {
 
             <input
               type="email"
-              placeholder="seu@email.com"
+              placeholder="seu@chipcode.com"
               value={email}
               onChange={(event) =>
                 setEmail(event.target.value)

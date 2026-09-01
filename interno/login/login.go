@@ -8,14 +8,14 @@ import (
 )
 
 type Login struct {
-	Id    int
+	Id    string
 	Email string
-	Senha  string
+	Senha string
 }
 
 func NewLogin(email, senha string) *Login {
 	l := &Login{
-		Id:    1,
+		Id:    "1",
 		Email: email,
 		Senha: senha,
 	}
