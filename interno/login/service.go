@@ -3,16 +3,18 @@ package login
 import (
 	"fmt"
 	"log/slog"
-
-	"github.com/andreylsant/estoque_de_chave/interno/token"
 )
 
 type LoginService struct {
 	RepositoryLogin RepositoryLogin
+	token TokenGerador
+}
+
+type TokenGerador interface {
+    GerarToken(userID string) (string, error)
 }
 
 func (l *LoginService) CreateLogin(login *Login) (string, error) {
-	claims := token.ClaimsUser{}
 
 	//crio um novo login
 	slog.Info("Login sendo criado!!")
@@ -30,7 +32,7 @@ func (l *LoginService) CreateLogin(login *Login) (string, error) {
 		return "", fmt.Errorf("[Error ao Salvar login]", err)
 	}
 
-	token, err := claims.CriarTokenJwt()
+	token, err := l.token.GerarToken(login.Id)
 	if err != nil {
 		return "", fmt.Errorf("[Error na criação do token]", err)
 	}
