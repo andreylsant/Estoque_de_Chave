@@ -8,9 +8,9 @@ import (
 )
 
 type Login struct {
-	Id    string
-	Email string
-	Senha string
+	Id    string `json:"id"`
+	Email string `josn:"email"`
+	Senha string `json:"senha"`
 }
 
 func NewLogin(email, senha string) *Login {

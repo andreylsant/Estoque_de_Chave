@@ -1,5 +1,6 @@
-import { FormEvent, useState } from "react";
+import {type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
 
 export function Login() {
   const navigate = useNavigate();
@@ -7,32 +8,33 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  async function handleSubmit(event: FormEvent) {
+  event.preventDefault();
 
-    if (!email || !senha) {
-      alert("Informe email e senha.");
-      return;
-    }
-
-    /*
-     * Temporariamente simulando login.
-     *
-     * Depois:
-     *
-     * POST /api/auth/login
-     *
-     * O backend Go retornará um JWT.
-     */
-
-    localStorage.setItem(
-      "token",
-      "token-temporario"
-    );
-
-    navigate("/dashboard");
+  console.log("verificando email e senha")
+  if (!email || !senha) {
+    alert("Informe email e senha.");
+    return;
   }
 
+  try {
+    const response = await api.post("/login", {
+      email: email,
+      senha: senha,
+    });
+
+    const token = response.data.token;
+
+    localStorage.setItem("token", token);
+
+    navigate("/dashboard");
+
+  } catch (error) {
+  console.error("ERRO:", error);
+  alert("Erro ao conectar com o servidor.");
+
+  }
+}
   return (
     <div className="login-page">
       <div className="login-card">

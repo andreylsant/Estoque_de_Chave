@@ -1,18 +1,19 @@
 package login
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 )
 
 type LoginService struct {
 	RepositoryLogin RepositoryLogin
-	token TokenGerador
+	Token TokenGerador
 }
 
 type TokenGerador interface {
     GerarToken(userID string) (string, error)
-}
+}	
 
 func (l *LoginService) CreateLogin(login *Login) (string, error) {
 
@@ -21,21 +22,28 @@ func (l *LoginService) CreateLogin(login *Login) (string, error) {
 	newLogin := NewLogin(login.Email, login.Senha)
 
 	//Gero meu hash de senha
-	_, err := newLogin.HashSenha(newLogin.Senha)
+	slog.Info("gerando hesh")
+	hash, err := newLogin.HashSenha(newLogin.Senha)
 	if err != nil {
 		return "", err
 	}
+	newLogin.Senha = hash
 
 	//Salvo login no banco de dados
+	slog.Info("salvando no banco de dados")
 	err = l.RepositoryLogin.SaveLogin(newLogin)
 	if err != nil {
-		return "", fmt.Errorf("[Error ao Salvar login]", err)
+		return "", errors.New("[Error ao Salvar login]")
 	}
 
-	token, err := l.token.GerarToken(login.Id)
+	//Aqui estou passando meu token para o usuario 
+	slog.Info("geranado token")
+	token, err := l.Token.GerarToken(login.Id)
 	if err != nil {
 		return "", fmt.Errorf("[Error na criação do token]", err)
 	}
+
+	slog.Info("retornando token ao cliente")
 	return token, nil
 }
 
