@@ -1,7 +1,6 @@
 package handle
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -14,7 +13,6 @@ type HandleKey struct {
 }
 
 func (h *HandleKey) Post_Login(c *gin.Context) {
-	fmt.Println("CHEGOU NO BACKEND!")
 
 	var login login.Login
 
@@ -26,16 +24,18 @@ func (h *HandleKey) Post_Login(c *gin.Context) {
 	}
 	//
 	slog.Info("inicindo service")
-	service, err := h.LoginService.CreateLogin(&login)
+	token, err := h.LoginService.CreateLogin(&login)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"Error": err,
+		})
 		return
 	}
 
 	slog.Info("logando")
 	slog.Info("logando no site.")
 	c.JSON(http.StatusOK, gin.H{
-		"token":    service,
+		"token":    token,
 		"mensagem": "Login recebido",
 	})
 }

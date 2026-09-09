@@ -1,8 +1,10 @@
 package token
 
 import (
+	"errors"
 	"log/slog"
 	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -29,13 +31,16 @@ func (s *ServiceClaims) GerarToken(userID string) (string, error) {
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
+
 	//Criando token com a assinatura ES256
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	slog.Info("criando token")
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString(chaveJWT)
 	if err != nil {
-		return "", err
+		return "", errors.New("Error ao gerar token")
 	}
+	slog.Info(tokenString)
 
 	return tokenString, nil
 }

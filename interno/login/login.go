@@ -1,11 +1,16 @@
 package login
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
+	"net/mail"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+var chipcode = "@chipcode.com"
 
 type Login struct {
 	Id    string `json:"id"`
@@ -13,16 +18,25 @@ type Login struct {
 	Senha string `json:"senha"`
 }
 
-func NewLogin(email, senha string) *Login {
+func NewLogin(email, senha string) (*Login, error) {
+	slog.Info("criando login func newlogin()")
 	l := &Login{
 		Id:    "1",
 		Email: email,
 		Senha: senha,
 	}
 
-	l.ValidadeLogin()
+	err := l.ValidadeLogin()
+	if err != nil {
+		return nil, err
+	}
 
-	return l
+	err= l.VerificarEmail()
+	if err != nil {
+		return nil, err
+	}
+
+	return l, nil
 }
 
 func (l *Login) ValidadeLogin() error {
@@ -45,4 +59,23 @@ func (l *Login) HashSenha(senha string) (string, error) {
 	}
 
 	return string(hash), nil
+}
+
+func (l *Login) VerificarEmail() error {
+	slog.Info("validado email...")
+
+	_, err := mail.ParseAddress(l.Email)
+	if err != nil {
+		return errors.New("email inválido")
+	}
+
+	if !strings.HasSuffix(l.Email, chipcode) {
+		return errors.New("email inválido: utilize um email @chipcode.com")
+	}
+
+	/*if !strings.Contains(l.Email, chipcode) {
+		return errors.New("error ao criar email! Email invalido")
+	}*/
+
+	return nil
 }
