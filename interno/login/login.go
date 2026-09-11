@@ -55,7 +55,7 @@ func (l *Login) HashSenha(senha string) (string, error) {
 		bcrypt.DefaultCost,
 	)
 	if err != nil {
-		return "", fmt.Errorf("Error ao gerar hash", err)
+		return "", fmt.Errorf("Error ao gerar hash: %w", err)
 	}
 
 	return string(hash), nil
