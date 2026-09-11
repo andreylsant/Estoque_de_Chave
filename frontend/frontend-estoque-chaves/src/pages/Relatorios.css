@@ -1,0 +1,23 @@
+.report-card {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 22px;
+}
+
+.report-card span {
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.report-card strong {
+  display: block;
+
+  margin-top: 10px;
+
+  font-size: 30px;
+}

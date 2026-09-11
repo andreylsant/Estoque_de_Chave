@@ -1,11 +1,13 @@
-import { FormEvent, useState } from "react";
+import "./NovoProduto.css";
+
+import { useState, type SyntheticEvent } from "react";
 
 export function NovoProduto() {
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!marca || !modelo || !quantidade) {
@@ -35,10 +37,7 @@ export function NovoProduto() {
         </div>
       </div>
 
-      <form
-        className="form-card"
-        onSubmit={handleSubmit}
-      >
+      <form className="form-card" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Marca</label>
 
@@ -46,9 +45,7 @@ export function NovoProduto() {
             type="text"
             placeholder="Ex: Fiat"
             value={marca}
-            onChange={(event) =>
-              setMarca(event.target.value)
-            }
+            onChange={(event) => setMarca(event.target.value)}
           />
         </div>
 
@@ -59,9 +56,7 @@ export function NovoProduto() {
             type="text"
             placeholder="Ex: Uno"
             value={modelo}
-            onChange={(event) =>
-              setModelo(event.target.value)
-            }
+            onChange={(event) => setModelo(event.target.value)}
           />
         </div>
 
@@ -73,16 +68,11 @@ export function NovoProduto() {
             min="0"
             placeholder="Ex: 100"
             value={quantidade}
-            onChange={(event) =>
-              setQuantidade(event.target.value)
-            }
+            onChange={(event) => setQuantidade(event.target.value)}
           />
         </div>
 
-        <button
-          type="submit"
-          className="button-primary"
-        >
+        <button type="submit" className="button-primary">
           Cadastrar produto
         </button>
       </form>

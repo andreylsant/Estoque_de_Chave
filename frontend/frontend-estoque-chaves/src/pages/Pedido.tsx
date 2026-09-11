@@ -1,3 +1,4 @@
+import "./Pedido.css";
 import { useMemo } from "react";
 import { produtosIniciais } from "../data/produtos";
 

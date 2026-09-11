@@ -1,0 +1,19 @@
+.order-info {
+  background: #eff6ff;
+
+  border: 1px solid #bfdbfe;
+
+  border-radius: 10px;
+
+  padding: 20px;
+
+  margin-bottom: 20px;
+}
+
+.order-info strong {
+  font-size: 28px;
+
+  margin-right: 10px;
+
+  color: #2563eb;
+}

@@ -1,3 +1,4 @@
+import "./Relatorios.css";
 import { produtosIniciais } from "../data/produtos";
 
 export function Relatorios() {

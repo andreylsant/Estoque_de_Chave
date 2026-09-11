@@ -1,3 +1,4 @@
+import "./Sidebar.css";
 import { NavLink } from "react-router-dom";
 
 export function Sidebar() {
@@ -41,3 +42,4 @@ export function Sidebar() {
     </aside>
     );
 }
+

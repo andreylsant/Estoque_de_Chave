@@ -1,3 +1,4 @@
+import "./ProductTable.css";
 import type { Produto } from "../types/produto";
 
 interface ProductTableProps {

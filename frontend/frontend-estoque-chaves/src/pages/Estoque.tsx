@@ -1,3 +1,4 @@
+import "./Estoque.css";
 import { useMemo, useState } from "react";
 import { produtosIniciais } from "../data/produtos";
 import { ProductTable } from "../componets/ProductTable";

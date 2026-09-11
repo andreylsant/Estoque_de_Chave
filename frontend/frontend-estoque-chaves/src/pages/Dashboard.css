@@ -1,0 +1,130 @@
+.page-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 28px;
+}
+
+.page-title h2 {
+  font-size: 25px;
+}
+
+.page-title p {
+  margin-top: 5px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.section-header {
+  margin: 30px 0 15px;
+}
+
+.section-header h3 {
+  font-size: 18px;
+}
+
+.section-header p {
+  margin-top: 5px;
+
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.cards-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.modal {
+  width: 100%;
+
+  max-width: 430px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 25px;
+}
+
+.modal h3 {
+  font-size: 20px;
+}
+
+.modal > p {
+  margin-top: 5px;
+
+  color: #6b7280;
+}
+
+.modal label {
+  display: block;
+
+  margin-top: 20px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.modal input {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 7px;
+
+  padding: 11px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+}
+
+.modal-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 25px;
+}
+
+@media (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .page-title {
+    align-items: flex-start;
+
+    gap: 15px;
+
+    flex-direction: column;
+  }
+}

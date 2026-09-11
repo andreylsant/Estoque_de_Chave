@@ -1,3 +1,4 @@
+import "./Dashboard.css";
 import { useState } from "react";
 import { StockCard } from "../componets/StockCard";
 import { ProductTable } from "../componets/ProductTable";

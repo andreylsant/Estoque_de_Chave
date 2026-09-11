@@ -1,3 +1,5 @@
+import "./StockCard.css";
+
 interface StockCardProps {
   title: string;
   value: number;
