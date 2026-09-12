@@ -61,6 +61,13 @@ func (l *Login) HashSenha(senha string) (string, error) {
 	return string(hash), nil
 }
 
+func CompararSenha(senhaDigitada string, senhaHash string) error {
+	return bcrypt.CompareHashAndPassword(
+		[]byte(senhaHash),
+		[]byte(senhaDigitada),
+	)
+}
+
 func (l *Login) VerificarEmail() error {
 	slog.Info("validado email...")
 

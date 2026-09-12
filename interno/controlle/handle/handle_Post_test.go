@@ -22,7 +22,7 @@ func (m *MockLogin) SaveLogin(login *login.Login) error {
 	return a.Error(0)
 }
 
-func (m *MockLogin) FindByEmail(email string) (*login.Login, error) {
+func (m *MockLogin) VerificaEmail(email string) (*login.Login, error) {
 	return &login.Login{}, nil
 }
 

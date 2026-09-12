@@ -16,11 +16,11 @@ import (
 func main() {
 	router := gin.Default()
 
-	db:= &database.Salvarlogin{}
-	token:= &token.ServiceClaims{}
-	service:= login.LoginService{
+	db := &database.Salvarlogin{}
+	token := &token.ServiceClaims{}
+	service := login.LoginService{
 		RepositoryLogin: db,
-		Token: token,
+		Token:           token,
 	}
 
 	router.Use(cors.New(cors.Config{
@@ -34,7 +34,8 @@ func main() {
 	handle := handle.HandleKey{
 		LoginService: service,
 	}
-	router.POST("/login", handle.Post_Login)	
+	router.POST("/criar-conta", handle.Post_Login)
+	router.POST("/login", handle.LoginDeUsuario)
 
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {

@@ -1,0 +1,25 @@
+.login-links {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.login-links a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.login-links a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.login-links span {
+  color: #999;
+  font-size: 12px;
+}

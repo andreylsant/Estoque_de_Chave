@@ -1,0 +1,82 @@
+.criar-conta-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f8;
+}
+
+.criar-conta-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.criar-conta-container h1 {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.criar-conta-container p {
+  margin-bottom: 30px;
+  text-align: center;
+  color: #666;
+}
+
+.criar-conta-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.criar-conta-container input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.criar-conta-container button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.criar-conta-container button:hover {
+  background: #1d4ed8;
+}
+
+.criar-conta-container a {
+  text-align: center;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.criar-conta-container a:hover {
+  text-decoration: underline;
+}
+
+.login-links {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-links a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.login-links a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}

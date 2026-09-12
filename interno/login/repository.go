@@ -1,6 +1,6 @@
 package login
 
 type RepositoryLogin interface {
-	SaveLogin(login *Login) error
-	FindByEmail(email string) (*Login, error)
+	SaveLogin(login *Login) error 
+	VerificaEmail(email string) (*Login, error)
 }

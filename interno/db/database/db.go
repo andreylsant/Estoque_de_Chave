@@ -17,7 +17,7 @@ func (s *Salvarlogin) SaveLogin(login *login.Login) error {
 	return nil
 }
 
-func (s *Salvarlogin) FindByEmail(email string) (*login.Login, error) {
+func (s *Salvarlogin) VerificaEmail(email string) (*login.Login, error) {
 	for _, use := range s.login {
 		if use.Email == email {
 			return &use, nil

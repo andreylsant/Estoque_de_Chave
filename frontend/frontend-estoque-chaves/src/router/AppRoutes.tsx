@@ -7,6 +7,8 @@ import {
 
 import { Layout } from "../componets/layout";
 import { Login } from "../pages/Login";
+import { CriarConta } from "../pages/CriandoConta";
+import { RecuperarSenha } from "../pages/RecuperarSenha";
 import { Dashboard } from "../pages/Dashboard";
 import { Estoque } from "../pages/Estoque";
 import { NovoProduto } from "../pages/NovoProduto";
@@ -31,6 +33,16 @@ export function AppRoutes() {
           path="/login"
           element={<Login />}
         />
+
+          <Route
+            path="/criar-conta"
+            element={<CriarConta />}
+          />
+
+          <Route
+            path="/recuperar-senha"
+            element={<RecuperarSenha />}
+      />
 
         <Route element={<ProtectedRoute />}>
           <Route
