@@ -80,3 +80,23 @@
   color: #1d4ed8;
   text-decoration: underline;
 }
+
+.message {
+  margin: 15px 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.message.sucesso {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.message.erro {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}

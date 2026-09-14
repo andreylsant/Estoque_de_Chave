@@ -1,8 +1,8 @@
 package estoquekey
 
 type Repository interface{
-	Save(key *Key) error
-	Upadete(key *Key)
-	Get() (*Key, error)
-	GetKeyID(id string) *Key
+	Save(chave *Chave) error
+	Upadete(chave *Chave) error
+	Get() ([]Chave, error)
+	GetKeyID(id string) *Chave
 }

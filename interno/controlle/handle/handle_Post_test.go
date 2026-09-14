@@ -68,7 +68,7 @@ func Test_PostLogin_CriandoNovoLogin(t *testing.T) {
 	repositoryToken.On("GerarToken", mock.Anything).Return("meu-token-jwt", nil)
 
 	// 3. Montando a estrutura do Handler com a dependência mockada
-	handler := HandleKey{
+	handler := HandleLogin{
 		LoginService: login.LoginService{
 			RepositoryLogin: repositoryMock,
 			Token:           repositoryToken,

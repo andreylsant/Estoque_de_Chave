@@ -22,7 +22,7 @@ export function Sidebar() {
         </NavLink>
 
         <NavLink to="/produtos/novo">
-          ➕ Novo produto
+          ➕ Cadastra Chave
         </NavLink>
 
         <NavLink to="/pedidos">

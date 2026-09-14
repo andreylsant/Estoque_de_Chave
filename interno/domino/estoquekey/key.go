@@ -4,34 +4,34 @@ import (
 	"fmt"
 )
 
-type Key struct {
+type Chave struct {
 	Id      string `json:"id"`
 	Marca   string `json:"marca"`
-	Modelo  int    `json:"modelo"`
-	Unidade int    `json:"unidade"`
+	Modelo  string    `json:"modelo"`
+	Quantidade int   `json:"quantidade"`
 }
 
-func NewKey(marca string, modelo, unidade int) (*Key, error) {
-	key:= &Key{
+func NewChave(marca, modelo string, quantidade int) (*Chave, error) {
+	chave:= &Chave{
 		Id: "1",
 		Marca:   marca,
 		Modelo:  modelo,
-		Unidade: unidade,
+		Quantidade: quantidade,
 	}
 
 	//chamando metodo error 
-	err:= key.ValidarError()
+	err:= chave.ValidarError()
 	if err != nil{
 		return nil, err
 	}
 
-	return key, nil
+	return chave, nil
 }
 
-func (k *Key) ValidarError() error{
-		if k.Marca == "" || k.Modelo == 0 {
+func (k *Chave) ValidarError() error{
+		if k.Marca == "" || k.Modelo == "" {
 		return  fmt.Errorf("[Error ao Criar marca]")
-	} else if k.Unidade == 0 {
+	} else if k.Quantidade == 0{
 		return fmt.Errorf("[Error De Unidade]")
 	}
 

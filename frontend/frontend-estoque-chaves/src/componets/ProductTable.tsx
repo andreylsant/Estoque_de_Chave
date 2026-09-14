@@ -1,14 +1,18 @@
 import type { Produto } from "../types/produto";
+import './productTable.css'
 
 interface ProductTableProps {
   produtos: Produto[];
-  onEdit: (produto: Produto) => void;
+  onAdd: (produto: Produto) => void;
+  onRemove: (produto: Produto) => void;
 }
 
 export function ProductTable({
   produtos,
-  onEdit,
+  onAdd,
+  onRemove,
 }: ProductTableProps) {
+
   function getStockStatus(quantidade: number) {
     if (quantidade <= 100) {
       return "critical";
@@ -69,12 +73,21 @@ export function ProductTable({
                 </td>
 
                 <td>
-                  <button
-                    className="button-secondary"
-                    onClick={() => onEdit(produto)}
-                  >
-                    Editar
-                  </button>
+                  <div className="stock-actions">
+                    <button
+                      className="button-add"
+                      onClick={() => onAdd(produto)}
+                    >
+                      +
+                    </button>
+
+                    <button
+                      className="button-remove"
+                      onClick={() => onRemove(produto)}
+                    >
+                      -
+                    </button>
+                  </div>
                 </td>
               </tr>
             );

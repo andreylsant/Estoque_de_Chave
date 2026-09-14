@@ -1,0 +1,34 @@
+.stock-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.button-add,
+.button-remove {
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.button-add {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.button-add:hover {
+  background-color: #bbf7d0;
+}
+
+.button-remove {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.button-remove:hover {
+  background-color: #fecaca;
+}

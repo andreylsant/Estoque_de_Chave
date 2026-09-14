@@ -2,7 +2,7 @@ export function Header(){
     return(
         <header className="header">
       <div>
-        <h1>Controle de Estoque</h1>
+        <h1>Estoque</h1>
         <p>Gerencie o estoque de chaves da loja</p>
       </div>
 

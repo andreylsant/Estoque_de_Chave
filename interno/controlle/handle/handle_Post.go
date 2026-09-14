@@ -8,13 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HandleKey struct {
+type HandleLogin struct {
 	LoginService login.LoginService
 }
 
 var usuarioLogin login.Login
 
-func (h *HandleKey) Post_Login(c *gin.Context) {
+func (h *HandleLogin) Post_Login(c *gin.Context) {
 	slog.Info("Criando usuario")
 	if err := c.ShouldBindJSON(&usuarioLogin); err != nil {
 		c.JSON(500, gin.H{
@@ -40,7 +40,7 @@ func (h *HandleKey) Post_Login(c *gin.Context) {
 
 }
 
-func (h *HandleKey) LoginDeUsuario(c *gin.Context){
+func (h *HandleLogin) LoginDeUsuario(c *gin.Context){
 	slog.Info("iniciando loge")
 	if err := c.ShouldBindJSON(&usuarioLogin); err != nil {
 		c.JSON(500, gin.H{

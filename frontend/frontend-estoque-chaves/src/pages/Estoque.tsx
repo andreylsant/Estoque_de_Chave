@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { produtosIniciais } from "../data/produtos";
 import { ProductTable } from "../componets/ProductTable";
+import { StockModal } from "../componets/StockModal";
 import type { Produto } from "../types/produto";
 
 export function Estoque() {
@@ -10,16 +11,24 @@ export function Estoque() {
 
   const [filtro, setFiltro] = useState("");
 
-  const [ordem, setOrdem] = useState<
-    "maior" | "menor"
-  >("menor");
+  const [ordem, setOrdem] = useState<"maior" | "menor">(
+    "menor"
+  );
 
-  const [somenteBaixo, setSomenteBaixo] =
-    useState(false);
+  const [somenteBaixo, setSomenteBaixo] = useState(false);
+
+  const [modalAberto, setModalAberto] = useState(false);
+
+  const [produtoSelecionado, setProdutoSelecionado] =
+    useState<Produto | null>(null);
+
+  const [tipoMovimento, setTipoMovimento] =
+    useState<"entrada" | "saida">("entrada");
 
   const produtosFiltrados = useMemo(() => {
     let resultado = [...produtos];
 
+    // Filtro por marca ou modelo
     if (filtro) {
       resultado = resultado.filter((produto) =>
         `${produto.marca} ${produto.modelo}`
@@ -28,12 +37,14 @@ export function Estoque() {
       );
     }
 
+    // Filtrar somente produtos com estoque baixo
     if (somenteBaixo) {
       resultado = resultado.filter(
         (produto) => produto.quantidade <= 200
       );
     }
 
+    // Ordenação
     resultado.sort((a, b) => {
       if (ordem === "maior") {
         return b.quantidade - a.quantidade;
@@ -45,30 +56,46 @@ export function Estoque() {
     return resultado;
   }, [produtos, filtro, ordem, somenteBaixo]);
 
-  function editarProduto(produto: Produto) {
-    const novaQuantidade = window.prompt(
-      `Quantidade para ${produto.marca} ${produto.modelo}:`,
-      String(produto.quantidade)
-    );
+  // Abre o modal para entrada ou saída
+  function abrirModal(
+    produto: Produto,
+    tipo: "entrada" | "saida"
+  ) {
+    setProdutoSelecionado(produto);
+    setTipoMovimento(tipo);
+    setModalAberto(true);
+  }
 
-    if (novaQuantidade === null) {
-      return;
-    }
-
-    const quantidade = Number(novaQuantidade);
-
-    if (isNaN(quantidade) || quantidade < 0) {
-      alert("Digite uma quantidade válida.");
+  // Confirma a movimentação do estoque
+  function confirmarMovimento(quantidade: number) {
+    if (!produtoSelecionado) {
       return;
     }
 
     setProdutos((produtosAtuais) =>
-      produtosAtuais.map((item) =>
-        item.id === produto.id
-          ? { ...item, quantidade }
-          : item
-      )
+      produtosAtuais.map((produto) => {
+        if (produto.id !== produtoSelecionado.id) {
+          return produto;
+        }
+
+        return {
+          ...produto,
+          quantidade:
+            tipoMovimento === "entrada"
+              ? produto.quantidade + quantidade
+              : produto.quantidade - quantidade,
+        };
+      })
     );
+
+    setModalAberto(false);
+    setProdutoSelecionado(null);
+  }
+
+  // Fecha o modal
+  function fecharModal() {
+    setModalAberto(false);
+    setProdutoSelecionado(null);
   }
 
   return (
@@ -122,8 +149,22 @@ export function Estoque() {
 
       <ProductTable
         produtos={produtosFiltrados}
-        onEdit={editarProduto}
+        onAdd={(produto) =>
+          abrirModal(produto, "entrada")
+        }
+        onRemove={(produto) =>
+          abrirModal(produto, "saida")
+        }
       />
+
+      {modalAberto && produtoSelecionado && (
+        <StockModal
+          produto={produtoSelecionado}
+          tipo={tipoMovimento}
+          onConfirm={confirmarMovimento}
+          onClose={fecharModal}
+        />
+      )}
     </div>
   );
-}
+} 
