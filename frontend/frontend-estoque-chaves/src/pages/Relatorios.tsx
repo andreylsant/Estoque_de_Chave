@@ -1,39 +1,44 @@
-import { produtosIniciais } from "../data/produtos";
+import { useEffect, useState } from "react";
+import { buscarProdutos } from "../services/produtoService";
+import type { Produto } from "../types/produto";
 
 export function Relatorios() {
-  const total = produtosIniciais.reduce(
-    (soma, produto) =>
-      soma + produto.quantidade,
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+
+  useEffect(() => {
+    buscarProdutos()
+      .then(setProdutos)
+      .catch((error) => {
+        console.error("Erro ao buscar produtos:", error);
+      });
+  }, []);
+
+  const total = produtos.reduce(
+    (soma, produto) => soma + produto.quantidade,
     0
   );
 
-  const baixo = produtosIniciais.filter(
+  const baixo = produtos.filter(
     (produto) => produto.quantidade <= 200
   );
 
   function exportarCSV() {
-    const header =
-      "Marca,Modelo,Quantidade\n";
+    const header = "Marca,Modelo,Quantidade\n";
 
-    const rows = produtosIniciais
+    const rows = produtos
       .map(
         (produto) =>
           `${produto.marca},${produto.modelo},${produto.quantidade}`
       )
       .join("\n");
 
-    const blob = new Blob(
-      [header + rows],
-      {
-        type: "text/csv;charset=utf-8;",
-      }
-    );
+    const blob = new Blob([header + rows], {
+      type: "text/csv;charset=utf-8;",
+    });
 
-    const url =
-      URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
 
-    const link =
-      document.createElement("a");
+    const link = document.createElement("a");
 
     link.href = url;
     link.download = "relatorio-estoque.csv";
@@ -69,9 +74,7 @@ export function Relatorios() {
 
         <div className="report-card">
           <span>Produtos cadastrados</span>
-          <strong>
-            {produtosIniciais.length}
-          </strong>
+          <strong>{produtos.length}</strong>
         </div>
 
         <div className="report-card">
@@ -99,9 +102,7 @@ export function Relatorios() {
               <tr key={produto.id}>
                 <td>{produto.marca}</td>
                 <td>{produto.modelo}</td>
-                <td>
-                  {produto.quantidade}
-                </td>
+                <td>{produto.quantidade}</td>
               </tr>
             ))}
           </tbody>

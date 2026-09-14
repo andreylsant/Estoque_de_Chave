@@ -1,34 +1,33 @@
-import { useMemo, useState } from "react";
-import { produtosIniciais } from "../data/produtos";
+import { useEffect, useMemo, useState } from "react";
 import { ProductTable } from "../componets/ProductTable";
 import { StockModal } from "../componets/StockModal";
+import { buscarProdutos } from "../services/produtoService";
 import type { Produto } from "../types/produto";
 
 export function Estoque() {
-  const [produtos, setProdutos] = useState<Produto[]>(
-    produtosIniciais
-  );
-
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [filtro, setFiltro] = useState("");
-
-  const [ordem, setOrdem] = useState<"maior" | "menor">(
-    "menor"
-  );
-
+  const [ordem, setOrdem] = useState<"maior" | "menor">("menor");
   const [somenteBaixo, setSomenteBaixo] = useState(false);
 
   const [modalAberto, setModalAberto] = useState(false);
-
   const [produtoSelecionado, setProdutoSelecionado] =
     useState<Produto | null>(null);
 
   const [tipoMovimento, setTipoMovimento] =
     useState<"entrada" | "saida">("entrada");
 
+  useEffect(() => {
+    buscarProdutos()
+      .then(setProdutos)
+      .catch((error) => {
+        console.error("Erro ao buscar produtos:", error);
+      });
+  }, []);
+
   const produtosFiltrados = useMemo(() => {
     let resultado = [...produtos];
 
-    // Filtro por marca ou modelo
     if (filtro) {
       resultado = resultado.filter((produto) =>
         `${produto.marca} ${produto.modelo}`
@@ -37,14 +36,12 @@ export function Estoque() {
       );
     }
 
-    // Filtrar somente produtos com estoque baixo
     if (somenteBaixo) {
       resultado = resultado.filter(
         (produto) => produto.quantidade <= 200
       );
     }
 
-    // Ordenação
     resultado.sort((a, b) => {
       if (ordem === "maior") {
         return b.quantidade - a.quantidade;
@@ -56,7 +53,6 @@ export function Estoque() {
     return resultado;
   }, [produtos, filtro, ordem, somenteBaixo]);
 
-  // Abre o modal para entrada ou saída
   function abrirModal(
     produto: Produto,
     tipo: "entrada" | "saida"
@@ -66,7 +62,6 @@ export function Estoque() {
     setModalAberto(true);
   }
 
-  // Confirma a movimentação do estoque
   function confirmarMovimento(quantidade: number) {
     if (!produtoSelecionado) {
       return;
@@ -92,7 +87,6 @@ export function Estoque() {
     setProdutoSelecionado(null);
   }
 
-  // Fecha o modal
   function fecharModal() {
     setModalAberto(false);
     setProdutoSelecionado(null);
@@ -167,4 +161,4 @@ export function Estoque() {
       )}
     </div>
   );
-} 
+}

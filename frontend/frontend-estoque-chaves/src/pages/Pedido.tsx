@@ -1,12 +1,23 @@
-import { useMemo } from "react";
-import { produtosIniciais } from "../data/produtos";
+import { useEffect, useMemo, useState } from "react";
+import { buscarProdutos } from "../services/produtoService";
+import type { Produto } from "../types/produto";
 
 export function Pedidos() {
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+
+  useEffect(() => {
+    buscarProdutos()
+      .then(setProdutos)
+      .catch((error) => {
+        console.error("Erro ao buscar produtos:", error);
+      });
+  }, []);
+
   const produtosParaPedido = useMemo(() => {
-    return produtosIniciais
+    return [...produtos]
       .filter((produto) => produto.quantidade <= 200)
       .sort((a, b) => a.quantidade - b.quantidade);
-  }, []);
+  }, [produtos]);
 
   function gerarMensagem() {
     if (produtosParaPedido.length === 0) {
@@ -17,8 +28,10 @@ export function Pedidos() {
       "Olá, gostaria de fazer um pedido de chaves:%0A%0A";
 
     produtosParaPedido.forEach((produto) => {
-      const quantidadePedido =
-        Math.max(0, 300 - produto.quantidade);
+      const quantidadePedido = Math.max(
+        0,
+        300 - produto.quantidade
+      );
 
       mensagem +=
         `${produto.marca} ${produto.modelo}: ` +
@@ -80,11 +93,10 @@ export function Pedidos() {
 
           <tbody>
             {produtosParaPedido.map((produto) => {
-              const quantidadePedido =
-                Math.max(
-                  0,
-                  300 - produto.quantidade
-                );
+              const quantidadePedido = Math.max(
+                0,
+                300 - produto.quantidade
+              );
 
               return (
                 <tr key={produto.id}>
