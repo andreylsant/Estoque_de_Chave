@@ -8,11 +8,15 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
+	"github.com/rs/xid"
+	"gorm.io/gorm"
 )
 
 var chipcode = "@chipcode.com"
 
 type Login struct {
+	gorm.Model
+
 	Id    string `json:"id"`
 	Email string `josn:"email"`
 	Senha string `json:"senha"`
@@ -21,7 +25,7 @@ type Login struct {
 func NewLogin(email, senha string) (*Login, error) {
 	slog.Info("criando login func newlogin()")
 	l := &Login{
-		Id:    "1",
+		Id:    xid.New().String(),
 		Email: email,
 		Senha: senha,
 	}
@@ -31,7 +35,7 @@ func NewLogin(email, senha string) (*Login, error) {
 		return nil, err
 	}
 
-	err= l.VerificarEmail()
+	err = l.VerificarEmail()
 	if err != nil {
 		return nil, err
 	}

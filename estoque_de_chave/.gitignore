@@ -1,0 +1,12 @@
+
+.env
+.env.*
+!.env.example
+
+# Go
+*.exe
+*.test
+
+# Frontend
+node_modules/
+dist/

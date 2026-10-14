@@ -5,4 +5,5 @@ type Repository interface{
 	Upadete(chave *Chave) error
 	Get() ([]Chave, error)
 	GetKeyID(id string) *Chave
+	DeleteID(chave *Chave) (string, error) 
 }

@@ -4,29 +4,50 @@ import (
 	"log/slog"
 
 	"github.com/andreylsant/estoque_de_chave/interno/domino/estoquekey"
+	"gorm.io/gorm"
 )
 
 type DBDeChave struct {
-	ListaDeChave []estoquekey.Chave
+	DB *gorm.DB
+}
+
+func NewDBDeChave() (*DBDeChave, error) {
+	db, err := ConectaDB()
+	if err != nil {
+		return nil, err
+	}
+
+	return &DBDeChave{
+		DB: db,
+	}, nil
 }
 
 func (db *DBDeChave) Save(chave *estoquekey.Chave) error {
 	slog.Info("iniciando banco de dados")
-	db.ListaDeChave = append(db.ListaDeChave, *chave)
-	return nil
+	return db.DB.Create(chave).Error
 }
 
 func (db *DBDeChave) Upadete(chave *estoquekey.Chave) error {
 	slog.Info("iniciando banco de dados")
-	db.ListaDeChave = append(db.ListaDeChave, *chave)
+	db.DB.Save(chave)
 	return nil
 }
 
 func (db *DBDeChave) Get() ([]estoquekey.Chave, error) {
-	listaDeChave:= db.ListaDeChave
+	var listaDeChave []estoquekey.Chave
+	
+	err := db.DB.Find(&listaDeChave).Error
+	if err != nil {
+		return nil, err
+	}
+	
 	return listaDeChave, nil
 }
 
 func (db *DBDeChave) GetKeyID(id string) *estoquekey.Chave {
 	return nil
+}
+
+func (db *DBDeChave) DeleteID(chave *estoquekey.Chave) (string, error) {
+	return "", nil
 }

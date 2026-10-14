@@ -31,3 +31,15 @@ func (s *Service) Get() ([]Chave, error) {
 
 	return chave, nil
 }
+
+func (s *Service) ServiceUpadete(){
+	
+}
+
+func (s *Service) ServiceGetId(){
+
+}
+
+func (s *Service) ServiceDeleteID(){
+
+}
