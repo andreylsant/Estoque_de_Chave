@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/andreylsant/estoque_de_chave/interno/controlle/handle"
@@ -12,10 +14,16 @@ import (
 	"github.com/andreylsant/estoque_de_chave/interno/token"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	router := gin.Default()
+
+	if err := godotenv.Load("../../.env"); err != nil {
+		slog.Error("Não foi possível carregar o arquivo .env", "erro", err)
+		os.Exit(1)
+	}
 
 	db := &database.Salvarlogin{}
 	token := &token.ServiceClaims{}
@@ -24,11 +32,16 @@ func main() {
 		Token:           token,
 	}
 
-	dbChave:= database.DBDeChave{}
-	serviceChave:= estoquekey.Service{
-		Repository: &dbChave,
+	dbChave, err := database.NewDBDeChave()
+	if err != nil {
+		slog.Error("Erro ao conectar ao banco", "erro", err)
+		os.Exit(1)
 	}
-	handleChave:= handle.HandleChave{
+	//dbChave:= database.DBDeChave{}
+	serviceChave := estoquekey.Service{
+		Repository: dbChave,
+	}
+	handleChave := handle.HandleChave{
 		Service: serviceChave,
 	}
 
@@ -48,7 +61,7 @@ func main() {
 	router.POST("/produtos", handleChave.PostChave)
 	router.GET("/produtos", handleChave.GetChave)
 
-	err := http.ListenAndServe(":8080", router)
+	err = http.ListenAndServe(":8080", router)
 	if err != nil {
 		fmt.Println("Error na porta %s", err)
 	}

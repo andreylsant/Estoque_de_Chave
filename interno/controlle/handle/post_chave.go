@@ -31,7 +31,7 @@ func (h *HandleChave) PostChave(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(201, gin.H{
 		"mensagem": "Produto cadastrado com sucesso",
 	})
 }
