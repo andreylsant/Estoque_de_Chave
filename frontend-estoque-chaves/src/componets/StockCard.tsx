@@ -1,0 +1,2 @@
+interface StockCardProps { title:string; value:number|string; description:string; icon:string; accent?:"green"|"red"|"amber"; }
+export function StockCard({title,value,description,icon,accent}:StockCardProps){return <div className={`stock-card ${accent?`accent-${accent}`:""}`}><div className="stock-card-top"><span>{title}</span><div className="stock-icon">{icon}</div></div><strong>{value}</strong><p>{description}</p></div>;}
