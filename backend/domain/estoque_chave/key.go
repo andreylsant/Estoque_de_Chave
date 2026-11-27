@@ -5,12 +5,9 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"gorm.io/gorm"
 )
 
 type Chave struct {
-	gorm.Model
-
 	Id         string `gorm:"primaryKey;size:32"`
 	Marca      string `gorm:"not null"`
 	Modelo     string `gorm:"not null"`
@@ -25,7 +22,7 @@ func NewChave(marca, modelo string, quantidade int) (*Chave, error) {
 		Marca:      marca,
 		Modelo:     modelo,
 		Quantidade: quantidade,
-		CreatedAt: time.Now(),
+		CreatedAt:  time.Now(),
 	}
 
 	//chamando metodo error

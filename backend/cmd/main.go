@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
+	ginhandler "github.com/andreylsant/estoque_de_chave/backend/adapters/ginhandler"
 	handlechave "github.com/andreylsant/estoque_de_chave/backend/adapters/ginhandler/handle_chave"
 	handlelogin "github.com/andreylsant/estoque_de_chave/backend/adapters/ginhandler/handle_login"
 	"github.com/andreylsant/estoque_de_chave/backend/adapters/persistence/gormrepo"
 	"github.com/andreylsant/estoque_de_chave/backend/application/usecase/service"
+	"github.com/andreylsant/estoque_de_chave/backend/infrastructure/database"
 	"github.com/andreylsant/estoque_de_chave/backend/token"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -18,52 +21,79 @@ import (
 )
 
 func main() {
-	router := gin.Default()
-
-	if err := godotenv.Load("../../.env"); err != nil {
-		slog.Error("Não foi possível carregar o arquivo .env", "erro", err)
-		os.Exit(1)
+	// O arquivo .env é opcional: em hospedagem, as variáveis são configuradas no painel.
+	if err := godotenv.Load(); err != nil {
+		slog.Info("Arquivo .env não encontrado; usando variáveis do ambiente")
 	}
 
-	db := &gormrepo.Salvarlogin{}
-	token := &token.ServiceClaims{}
-	service_l := service.LoginService{
-		RepositoryLogin: db,
-		Token:           token,
-	}
-
-	dbChave, err := gormrepo.NewDBDeChave()
+	db, err := database.ConectaDB()
 	if err != nil {
-		slog.Error("Erro ao conectar ao banco", "erro", err)
-		os.Exit(1)
-	}
-	//dbChave:= database.DBDeChave{}
-	serviceChave := service.Service{
-		Repository: dbChave,
-	}
-	handleChave := handlechave.Handle{
-		Service: serviceChave,
+		log.Fatalf("falha ao conectar ao banco de dados: %v", err)
 	}
 
+	jwtService, err := token.NewServiceClaims(os.Getenv("JWT_SECRET"))
+	if err != nil {
+		log.Fatalf("configuração JWT inválida: %v", err)
+	}
+
+	loginRepository := gormrepo.NewLoginRepository(db)
+	loginService := service.LoginService{
+		RepositoryLogin: loginRepository,
+		Token:           jwtService,
+	}
+
+	chaveRepository := gormrepo.NewDBDeChave(db)
+	chaveService := service.Service{Repository: chaveRepository}
+	chaveHandler := handlechave.Handle{Service: chaveService}
+	loginHandler := handlelogin.HandleLogin{LoginService: loginService}
+
+	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowOrigins:     allowedOrigins(),
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
 
-	handle := handlelogin.HandleLogin{
-		LoginService: service_l,
-	}
-	router.POST("/criar-conta", handle.Post_Login)
-	router.POST("/login", handle.LoginDeUsuario)
-	router.POST("/produtos", handleChave.PostChave)
-	router.PATCH("/produtos/:id/entrada", handleChave.AdicionarChave)
-	router.GET("/produtos", handleChave.GetChave)
+	router.POST("/criar-conta", loginHandler.Post_Login)
+	router.POST("/login", loginHandler.LoginDeUsuario)
 
-	err = http.ListenAndServe(":8080", router)
-	if err != nil {
-		fmt.Println("Error na porta %s", err)
+	// O frontend já envia o JWT no cabeçalho Authorization após o login.
+	produtos := router.Group("/produtos")
+	produtos.Use(ginhandler.AuthRequired())
+	produtos.POST("", chaveHandler.PostChave)
+	produtos.PATCH("/:id/entrada", chaveHandler.AdicionarChave)
+	produtos.GET("", chaveHandler.GetChave)
+
+	port := strings.TrimSpace(os.Getenv("PORT"))
+	if port == "" {
+		port = "8080"
 	}
+
+	server := &http.Server{
+		Addr:              ":" + port,
+		Handler:           router,
+		ReadHeaderTimeout: 10 * time.Second,
+	}
+	log.Printf("API iniciada na porta %s", port)
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("falha ao iniciar servidor: %v", err)
+	}
+}
+
+func allowedOrigins() []string {
+	origins := strings.TrimSpace(os.Getenv("FRONTEND_URL"))
+	if origins == "" {
+		return []string{"http://localhost:5173"}
+	}
+
+	parts := strings.Split(origins, ",")
+	result := make([]string, 0, len(parts))
+	for _, origin := range parts {
+		if origin = strings.TrimSpace(origin); origin != "" {
+			result = append(result, origin)
+		}
+	}
+	return result
 }

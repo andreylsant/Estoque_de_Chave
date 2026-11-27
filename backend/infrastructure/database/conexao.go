@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	estoquechave "github.com/andreylsant/estoque_de_chave/backend/domain/estoque_chave"
 	loginuser "github.com/andreylsant/estoque_de_chave/backend/domain/login_user"
@@ -10,15 +11,29 @@ import (
 	"gorm.io/gorm"
 )
 
+// ConectaDB abre a conexão PostgreSQL e prepara as tabelas da aplicação.
+// Em provedores como Neon, DATABASE_URL deve conter a URL completa com SSL.
 func ConectaDB() (*gorm.DB, error) {
-	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		valorOuPadrao("DB_HOST", "localhost"),
-		valorOuPadrao("DB_PORT", "5432"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"),
-	)
+	dsn := strings.TrimSpace(os.Getenv("DATABASE_URL"))
+	if dsn == "" {
+		user := strings.TrimSpace(os.Getenv("POSTGRES_USER"))
+		password := os.Getenv("POSTGRES_PASSWORD")
+		databaseName := strings.TrimSpace(os.Getenv("POSTGRES_DB"))
+		if user == "" || password == "" || databaseName == "" {
+			return nil, fmt.Errorf("configure DATABASE_URL ou POSTGRES_USER, POSTGRES_PASSWORD e POSTGRES_DB")
+		}
+
+		sslMode := valorOuPadrao("DB_SSLMODE", "disable")
+		dsn = fmt.Sprintf(
+			"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+			valorOuPadrao("DB_HOST", "localhost"),
+			valorOuPadrao("DB_PORT", "5432"),
+			user,
+			password,
+			databaseName,
+			sslMode,
+		)
+	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -29,15 +44,13 @@ func ConectaDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("obter conexão SQL: %w", err)
 	}
-
 	if err := sqlDB.Ping(); err != nil {
-		return nil, fmt.Errorf("verificar conexão: %w", err)
+		_ = sqlDB.Close()
+		return nil, fmt.Errorf("verificar conexão com PostgreSQL: %w", err)
 	}
 
-	if err := db.AutoMigrate(
-		&loginuser.Login{},
-		&estoquechave.Chave{},
-	); err != nil {
+	if err := db.AutoMigrate(&loginuser.Login{}, &estoquechave.Chave{}); err != nil {
+		_ = sqlDB.Close()
 		return nil, fmt.Errorf("migrar tabelas: %w", err)
 	}
 
@@ -45,7 +58,7 @@ func ConectaDB() (*gorm.DB, error) {
 }
 
 func valorOuPadrao(chave, padrao string) string {
-	valor := os.Getenv(chave)
+	valor := strings.TrimSpace(os.Getenv(chave))
 	if valor == "" {
 		return padrao
 	}

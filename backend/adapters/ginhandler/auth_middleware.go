@@ -23,6 +23,10 @@ func AuthRequired() gin.HandlerFunc {
 			return
 		}
 		secret := os.Getenv("JWT_SECRET")
+		if len(secret) < 32 {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"erro": "JWT_SECRET não configurado corretamente"})
+			return
+		}
 		claims := &tokenClaims{}
 		token, err := jwt.ParseWithClaims(parts[1], claims, func(token *jwt.Token) (interface{}, error) {
 			if token.Method != jwt.SigningMethodHS256 {

@@ -10,22 +10,17 @@ import (
 
 	"github.com/rs/xid"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 var chipcode = "@chipcode.com"
 
 type Login struct {
-	gorm.Model
-
 	Id        string `gorm:"primaryKey;size:32"`
 	Email     string `gorm:"uniqueIndex;not null"`
 	Senha     string `gorm:"column:senha;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
-
-
 
 func NewLogin(email, senha string) (*Login, error) {
 	slog.Info("criando login func newlogin()")

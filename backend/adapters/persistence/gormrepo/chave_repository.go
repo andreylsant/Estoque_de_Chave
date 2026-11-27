@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	estoquechave "github.com/andreylsant/estoque_de_chave/backend/domain/estoque_chave"
-	"github.com/andreylsant/estoque_de_chave/backend/infrastructure/database"
 	"gorm.io/gorm"
 )
 
@@ -14,15 +13,8 @@ type DBDeChave struct {
 	DB *gorm.DB
 }
 
-func NewDBDeChave() (*DBDeChave, error) {
-	db, err := database.ConectaDB()
-	if err != nil {
-		return nil, err
-	}
-
-	return &DBDeChave{
-		DB: db,
-	}, nil
+func NewDBDeChave(db *gorm.DB) *DBDeChave {
+	return &DBDeChave{DB: db}
 }
 
 func (db *DBDeChave) Save(chave *estoquechave.Chave) error {
@@ -32,8 +24,7 @@ func (db *DBDeChave) Save(chave *estoquechave.Chave) error {
 
 func (db *DBDeChave) Upadete(chave *estoquechave.Chave) error {
 	slog.Info("iniciando banco de dados")
-	db.DB.Save(chave)
-	return nil
+	return db.DB.Save(chave).Error
 }
 
 func (db *DBDeChave) Get() ([]estoquechave.Chave, error) {

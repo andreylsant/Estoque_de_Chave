@@ -2,45 +2,52 @@ package token
 
 import (
 	"errors"
-	"log/slog"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	userID    string `json:"id"`
+	UserID string `json:"id"`
 	jwt.RegisteredClaims
 }
 
-type ServiceClaims struct{}
+type ServiceClaims struct {
+	secret []byte
+}
 
-// Precisa de uma chave segreta
-var chaveJWT = []byte("abcdefghijklnmopqrstuvwyz123456789")
+// NewServiceClaims cria o gerador de tokens com um segredo fornecido pelo ambiente.
+func NewServiceClaims(secret string) (*ServiceClaims, error) {
+	secret = strings.TrimSpace(secret)
+	if len(secret) < 32 {
+		return nil, errors.New("JWT_SECRET precisa ter pelo menos 32 caracteres")
+	}
+	return &ServiceClaims{secret: []byte(secret)}, nil
+}
 
 func (s *ServiceClaims) GerarToken(userID string) (string, error) {
-	slog.Info("Iniciando geração de token jwt")
-	//Adicionando tempo de expiração para meu tokem jwt
-	tempo_Expiracao := time.Now().Add(24 * time.Hour)
+	if s == nil || len(s.secret) == 0 {
+		return "", errors.New("gerador JWT não configurado")
+	}
+	if strings.TrimSpace(userID) == "" {
+		return "", errors.New("identificador do usuário não informado")
+	}
 
-	//Primeiro criar um claims
+	now := time.Now()
 	claims := Claims{
-		userID:    userID,
+		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(tempo_Expiracao),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(now.Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(now),
 		},
 	}
 
-	//Criando token com a assinatura ES256
-	slog.Info("criando token")
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	tokenString, err := token.SignedString(chaveJWT)
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := jwtToken.SignedString(s.secret)
 	if err != nil {
-		return "", errors.New("Error ao gerar token")
+		return "", fmt.Errorf("gerar token JWT: %w", err)
 	}
-	slog.Info(tokenString)
-
 	return tokenString, nil
 }

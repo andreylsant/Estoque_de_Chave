@@ -13,10 +13,11 @@ type HandleLogin struct {
 	LoginService service.LoginService
 }
 
-var usuarioLogin gormrepo.Login
-
 func (h *HandleLogin) Post_Login(c *gin.Context) {
 	slog.Info("Criando usuario")
+
+	var usuarioLogin gormrepo.Login
+
 	if err := c.ShouldBindJSON(&usuarioLogin); err != nil {
 		c.JSON(500, gin.H{
 			"erro": "Dados de login inválidos",
@@ -43,6 +44,9 @@ func (h *HandleLogin) Post_Login(c *gin.Context) {
 
 func (h *HandleLogin) LoginDeUsuario(c *gin.Context){
 	slog.Info("iniciando loge")
+
+	var usuarioLogin gormrepo.Login
+
 	if err := c.ShouldBindJSON(&usuarioLogin); err != nil {
 		c.JSON(500, gin.H{
 			"erro": "Dados de login inválidos",

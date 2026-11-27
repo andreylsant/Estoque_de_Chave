@@ -85,7 +85,7 @@ func (l *LoginService) ValidarLogin(login *gormrepo.Login) (string, error) {
 
 	//Aqui estou passando meu token para o usuario
 	slog.Info("geranado token")
-	token, err := l.Token.GerarToken(login.Id)
+	token, err := l.Token.GerarToken(usuario.Id)
 	if err != nil {
 		return "", errors.New("error ao criar token")
 	}
