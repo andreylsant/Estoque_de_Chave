@@ -63,7 +63,7 @@ func main() {
 	produtos := router.Group("/produtos")
 	produtos.Use(ginhandler.AuthRequired())
 	produtos.POST("", chaveHandler.PostChave)
-	produtos.PATCH("/:id/entrada", chaveHandler.AdicionarChave)
+	produtos.PATCH("/:id/estoque", chaveHandler.AdicionarChave)
 	produtos.GET("", chaveHandler.GetChave)
 
 	port := strings.TrimSpace(os.Getenv("PORT"))
